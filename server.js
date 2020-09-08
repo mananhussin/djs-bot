@@ -1,9 +1,14 @@
+
+
+
+ 
 const { token, prefix } = require("./config.json")
 const { config } = require("dotenv");
 const discord = require("discord.js") //Gonna use Discord.js Module xD
 const client = new discord.Client({
-  disableEveryone: true
+  disableEveryone: true // what does this disable thing do?
 });
+const db = require("quick.db")
 
 client.commands = new discord.Collection();
 client.aliases = new discord.Collection();
@@ -46,5 +51,26 @@ if(message.author.bot) return;
 
  
  }) //All codes link in description
+
+//GONNA USE EVENT HERE
+
+client.on("guildMemberAdd", (member) => {
+  let chx = db.get(`welchannel_${member.guild.id}`);
+  
+  if(chx === null) {
+    return;
+  }
+
+  let wembed = new discord.MessageEmbed()
+  .setAuthor(member.user.username, member.user.avatarURL())
+  .setColor("#ff2050")
+  .setThumbnail(member.user.avatarURL())
+  .setDescription(`We are very happy to have you in our server`);
+  
+  client.channels.cache.get(chx).send(wembed)
+})
+
+
+
 
 client.login(token)
